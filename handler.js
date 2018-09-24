@@ -1,26 +1,48 @@
 'use strict';
 
+const justToTest = require("./folder/test");
+
 module.exports.test_jedan = async (event, context) => {
 
-  console.log("test : "+JSON.stringify(event, null, 2));
-  console.log("test dva : "+event.queryStringParameters);
-  console.log("test tri : "+event.ime);
-  
-  
-  //   event.Records.forEach(function(record) {
-  //       console.log(record.eventID);
-  //       console.log(record.eventName);
-  //       console.log('DynamoDB Record: %j', record.dynamodb);
-  //   });
+  let pathParameters = event.pathParameters.id
+  // console.log(event);
+  // console.log("pathParameters : "+ event.pathParameters.id);
+  // console.log("test : " + JSON.stringify(event, null, 2));
+  // console.log("test dva : " + event.queryStringParameters);
+  // console.log("test tri : " + event.ime);
+  console.log(justToTest.macka(pathParameters));
 
+
+
+  const user = {
+    email: event.email,
+    created_at: Date.now()
+  }
+
+  
   return {
     statusCode: 200,
     body: JSON.stringify({
       message: 'Test Dva!',
-      input: event.ime,
+      input: "Test : " + event.ime,
+      params: "pathParameters : " + pathParameters,
+      dateTime: "DateTime : " + user.created_at,
+      nekiTekst: "NekiTekst : " + justToTest.macka(pathParameters),
     }),
   };
 
-  // Use this code if you don't use the http event with the LAMBDA-PROXY integration
-  // return { message: 'Go Serverless v1.0! Your function executed successfully!', event };
 };
+
+module.exports.test_post = async (event, context) => {
+  const item = JSON.parse(event.body);
+  console.log(item);
+
+  return {
+    statusCode: 200,
+    body: JSON.stringify({
+      message: 'Test POST!',
+      input: "Test  : " + item.ime,
+    }),
+  };
+
+}
