@@ -10,6 +10,10 @@ serverless invoke -f test_jedan -p event.json  -l
 
 LINKOVI
 
+# dinamoDB 
+https://github.com/mavi888/serverless-dynamo-basic-operations
+
+
 https://github.com/sbstjn/serverless-dynamodb-autoscaling
 https://foobar123.com/nodejs-project-to-aws-lamdba-31a82b2bbcbc
 https://github.com/mavi888/meetup-event-collector-node

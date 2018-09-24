@@ -1,13 +1,34 @@
 service: servis 
 
+custom:
+  myStage: ${opt:stage, self:provider.stage}
+  settings:
+    radni:
+      ITEMS_DYNAMODB_TABLE: nemanja-baza-radni
+    prod:
+      ITEMS_DYNAMODB_TABLE: nemanja-baza-prod
+
+
 provider:
   name: aws
   runtime: nodejs8.10
   stage: radni
   region: us-east-1
-  environment:
-    variable1: value1
-    testenvime : sikimiki
+  environment: ${self:custom.settings.${self:custom.myStage}}
+
+  # environment: 
+  #   variable1: value1
+  #   testenvime : sikimiki
+  iamRoleStatements:
+    - Effect: "Allow"
+      Action:
+        - "dynamodb:GetItem"
+        - "dynamodb:PutItem"
+        - "dynamodb:UpdateItem"
+        - "dynamodb:DeleteItem"
+        - "dynamodb:ListStreams"
+      Resource:
+        - "arn:aws:dynamodb:${self:provider.region}:*:table/${self:custom.settings.${self:custom.myStage}.ITEMS_DYNAMODB_TABLE}"
 
 functions:
   test_jedan:
@@ -26,5 +47,35 @@ functions:
      - http:
          path: postic
          method: post
+  saveItem:
+    handler: handler.saveItem
+    events:
+      - http:
+          path: item
+          method: post
+  getItem:
+    handler: handler.getItem
+    events:
+      - http:
+          path: item/{itemId}
+          method: get
+
+resources:
+  Resources:
+    ImagesTable:
+      Type: "AWS::DynamoDB::Table"
+      Properties:
+        AttributeDefinitions:
+        - AttributeName: "itemId"
+          AttributeType: "S"
+        KeySchema:
+        - AttributeName: "itemId"
+          KeyType: "HASH"
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+        TableName: ${self:custom.settings.${self:custom.myStage}.ITEMS_DYNAMODB_TABLE}
+        StreamSpecification:
+          StreamViewType: NEW_IMAGE
      
          
