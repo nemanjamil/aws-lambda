@@ -50,6 +50,7 @@ module.exports.test_jedan = async (event, context) => {
   console.log("Env samo_ovde_2 : "+process.env.samo_ovde_2);
   //console.log("Env custom.test : "+process.env.custom.test);
   console.log("Env config DOMAIN : "+config.DOMAIN);
+  // lalal
 
   const user = {
     email: event.email,
