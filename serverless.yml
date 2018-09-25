@@ -1,7 +1,11 @@
 service: servis 
 
+environment:
+   pera : mika
+
 custom:
   myStage: ${opt:stage, self:provider.stage}
+  test: test2
   settings:
     radni:
       ITEMS_DYNAMODB_TABLE: nemanja-baza-radni
@@ -33,6 +37,9 @@ provider:
 functions:
   test_jedan:
     handler: handler.test_jedan
+    environment:
+      samo_ovde: samo_ovde_opis
+      samo_ovde_2 : ${self:custom.test}
     events:
      - http:
          path: jedan/{id}
