@@ -66,6 +66,19 @@ functions:
       - http:
           path: item/{itemId}
           method: get
+  step_function:
+    handler: handler.step_function
+    events:
+      - http:
+          path: step_function
+          method: get
+  call_step_function:
+    handler: handler.call_step_function
+    events:
+      - http:
+          path: call_step_function
+          method: get
+
 
 resources:
   Resources:
