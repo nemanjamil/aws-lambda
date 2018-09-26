@@ -1,11 +1,13 @@
 service: servis 
 
+
 environment:
    pera : mika
 
 custom:
   myStage: ${opt:stage, self:provider.stage}
   test: test2
+  accountId : 553770165424
   settings:
     radni:
       ITEMS_DYNAMODB_TABLE: nemanja-baza-radni
@@ -20,9 +22,6 @@ provider:
   region: us-east-1
   environment: ${self:custom.settings.${self:custom.myStage}}
 
-  # environment: 
-  #   variable1: value1
-  #   testenvime : sikimiki
   iamRoleStatements:
     - Effect: "Allow"
       Action:
@@ -31,8 +30,11 @@ provider:
         - "dynamodb:UpdateItem"
         - "dynamodb:DeleteItem"
         - "dynamodb:ListStreams"
-      Resource:
+        - "states:StartExecution"
+      Resource: 
         - "arn:aws:dynamodb:${self:provider.region}:*:table/${self:custom.settings.${self:custom.myStage}.ITEMS_DYNAMODB_TABLE}"
+        - "arn:aws:states:us-east-1:553770165424:stateMachine:Helloworld_4"
+        - "arn:aws:states:us-east-1:553770165424:stateMachine:hello"
 
 functions:
   test_jedan:
@@ -72,12 +74,24 @@ functions:
       - http:
           path: step_function
           method: get
+  step_function_koja_se_poziva:
+    handler: handler.step_function_koja_se_poziva
+    events:
+      - http:
+          path: step_function_koja_se_poziva
+          method: get
   call_step_function:
     handler: handler.call_step_function
     events:
       - http:
           path: call_step_function
           method: get
+  hello:
+    handler: handler.hello
+  ciao:
+    handler: handler.ciao
+  final:
+    handler: handler.final
 
 
 resources:
@@ -97,5 +111,35 @@ resources:
         TableName: ${self:custom.settings.${self:custom.myStage}.ITEMS_DYNAMODB_TABLE}
         StreamSpecification:
           StreamViewType: NEW_IMAGE
-     
-         
+
+
+
+stepFunctions:
+  stateMachines:
+    hellostepfunc1:
+      events:
+        - http:
+            path: pera
+            method: GET
+      name: 'hello'
+      definition:
+        Comment: "A Hello World example"
+        StartAt: HelloWorld
+        States:
+          HelloWorld:
+            Type: Task
+            Resource: "arn:aws:lambda:#{AWS::Region}:#{AWS::AccountId}:function:${self:service}-${opt:stage}-hello"
+            Next: FinalState
+          # CiaoWorld:
+          #   Type: Task
+          #   Resource: "arn:aws:lambda:#{AWS::Region}:#{AWS::AccountId}:function:${self:service}-${opt:stage}-ciao"
+          #   End: true
+          FinalState:
+            Type: Task
+            Resource: "arn:aws:lambda:#{AWS::Region}:#{AWS::AccountId}:function:${self:service}-${opt:stage}-final"
+            End: true
+ 
+
+plugins:
+  - serverless-step-functions
+  - serverless-pseudo-parameters      

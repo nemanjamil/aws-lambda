@@ -4,8 +4,8 @@ const justToTest = require("./folder/test");
 const databaseManager = require('./folder/dataBaseManager');
 const uuidv1 = require('uuid/v1');
 const config = require("./folder/config")
-const AWS = require("aws-sdk");
-const stepkoFunction = AWS.StepFunctions();
+const AWS = require('aws-sdk');
+const stepfunctions = new AWS.StepFunctions();
 
 function createResponse(statusCode, message) {
   return {
@@ -88,40 +88,70 @@ module.exports.test_post = async (event, context) => {
 
 module.exports.step_function = (event, context, cb) => {
   let obj = {
-    miki: "siki",
-    test: "test_dva"
+    miki: "1",
+    test: "Step_function is called"
   }
   cb(null, createResponse(200, obj));
 }
 
-module.exports.call_step_function = (event, context, cb) => {
+module.exports.step_function_koja_se_poziva = (event, context, cb) => {
   let obj = {
-    miki: "siki",
-    test: "waeawdad"
+    miki: "3223",
+    test: "step_function_koja_se_poziva is called"
   }
   cb(null, createResponse(200, obj));
 }
 
-module.exports.sadas = (event, contex, cb) => {
+module.exports.hello = (event, context, callback) => {
+  const response = {
+    statusCode: 200,
+    body: JSON.stringify({
+      message: 'Go Serverless v1.0! Your function executed successfully!',
+      input: event,
+    }),
+  };
 
-  let obj = {
-    miki: "siki",
-    test: "test_dva"
-  }
-  cb(null, createResponse(200, obj));
+  callback(null, response);
+};
 
-  /* let obj = {
-    miki: "miki_error",
-    test: "Error NEKI"
+module.exports.final = (event, context, callback) => {
+  const response = {
+    statusCode: 200,
+    body: JSON.stringify({
+      message: 'Passed final states',
+      input: event,
+    }),
+  };
+  callback(null, response);
+};
+
+
+module.exports.ciao = (event, context, callback) => {
+  const response = {
+    statusCode: 200,
+    body: JSON.stringify({
+      message: 'ciao world!'
+    }),
+  };
+  callback(null, response);
+};
+
+
+module.exports.call_step_function = (event, contex, cb) => {
+
+  let obj_test = {
+    miki: "1",
+    test: "Step_function is called",
+    stasaljem: "Lepo Vreme"
   }
-  cb(null, createResponse(200, obj));
 
   const params = {
-    stepMachineArn: 'arn:aws:states:us-east-1:553770165424:execution:Helloworld_2:Hello_2',
-    name: 'Execution Lambda'
-  } */
+    stateMachineArn: 'arn:aws:states:us-east-1:553770165424:stateMachine:Helloworld_4',
+    name: "HW_12",
+    input: JSON.stringify(obj_test) 
+  }
 
-  /* stepkoFunction.startExecution(params, (err, data) => {
+  stepfunctions.startExecution(params, (err, data) => {
 
     if (err) {
       console.error(err);
@@ -136,12 +166,13 @@ module.exports.sadas = (event, contex, cb) => {
       console.log(data);
       let obj = {
         miki: "miki_sve_je_ok",
-        test: "Sve je ok"
+        test: "Sve je ok",
+        data: data
       }
       cb(null, createResponse(200, obj));
 
     }
-  }) */
+  })
 
 
 }
