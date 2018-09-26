@@ -31,7 +31,9 @@ provider:
         - "dynamodb:DeleteItem"
         - "dynamodb:ListStreams"
         - "states:StartExecution"
+        - "states:ListStateMachines"
       Resource: 
+        # -  "arn:aws:states:*:*:*"
         - "arn:aws:dynamodb:${self:provider.region}:*:table/${self:custom.settings.${self:custom.myStage}.ITEMS_DYNAMODB_TABLE}"
         - "arn:aws:states:us-east-1:553770165424:stateMachine:Helloworld_4"
         - "arn:aws:states:us-east-1:553770165424:stateMachine:hello"
@@ -93,6 +95,18 @@ functions:
   final:
     handler: handler.final
 
+  executeStepFunction:
+    handler: handler.executeStepFunction
+    events:
+      - http:
+          path: execute_step_function
+          method: get
+  # calculateRandomNumber:
+  #   handler: handler.calculateRandomNumber
+  # moreCalculations:
+  #   handler: handler.moreCalculations
+
+
 
 resources:
   Resources:
@@ -117,10 +131,10 @@ resources:
 stepFunctions:
   stateMachines:
     hellostepfunc1:
-      events:
-        - http:
-            path: pera
-            method: GET
+      # events:
+      #   - http:
+      #       path: pera
+      #       method: GET
       name: 'hello'
       definition:
         Comment: "A Hello World example"

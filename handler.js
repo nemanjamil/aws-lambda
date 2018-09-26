@@ -14,6 +14,65 @@ function createResponse(statusCode, message) {
   }
 }
 
+
+module.exports.executeStepFunction = (event, context, cb) => {
+
+  console.log("executeStepFunction");
+  const number = event.queryStringParameters.number;
+  console.log(number);
+
+  callStepFunction(number).then(result => {
+
+    let message = 'Step function is executing';
+    if (!result) {
+      message = 'Step function is not executing';
+    }
+    const response = {
+      statusCode: 200,
+      body: JSON.stringify({
+        message
+      }),
+    };
+    cb(null, response);
+    
+
+  })
+  
+
+
+}
+
+module.exports.calculateRandomNumber = (event, context, callback) => {
+  console.log('calculateRandomNumber was called');
+
+  let result = event.number;
+  console.log(result);
+
+  callback(null, {
+    result
+  });
+};
+
+function callStepFunction(number) {
+  console.log('callStepFunction');
+
+  const stateMachineName = 'hello'; // The name of the step function we defined in the serverless.yml
+
+  var params = {
+    stateMachineArn: "arn:aws:states:us-east-1:553770165424:stateMachine:hello",
+    input: JSON.stringify({
+      number: number*2
+    })
+  };
+
+  console.log('Start execution');
+  return stepfunctions.startExecution(params).promise().then(() => {
+    return true;
+  });
+}
+
+
+
 module.exports.saveItem = (event, context, callback) => {
   const item = JSON.parse(event.body);
   console.log(item);
@@ -103,18 +162,30 @@ module.exports.step_function_koja_se_poziva = (event, context, cb) => {
 }
 
 module.exports.hello = (event, context, callback) => {
-  const response = {
+
+  let hl = event.number;
+  console.log("Hello was triggered");
+  console.log("Uhvatili smo broj : " + hl);
+  //console.log(event.number);
+
+  let obj = {}
+
+  obj.broj = hl+15
+  /* const response = {
     statusCode: 200,
     body: JSON.stringify({
       message: 'Go Serverless v1.0! Your function executed successfully!',
-      input: event,
+      broj: event.number,
     }),
-  };
+  }; */
 
-  callback(null, response);
+  callback(null, obj);
 };
 
 module.exports.final = (event, context, callback) => {
+  console.log("Passed final state");
+  console.log(event);
+  console.log("-----");
   const response = {
     statusCode: 200,
     body: JSON.stringify({
@@ -148,7 +219,7 @@ module.exports.call_step_function = (event, contex, cb) => {
   const params = {
     stateMachineArn: 'arn:aws:states:us-east-1:553770165424:stateMachine:Helloworld_4',
     name: "HW_12",
-    input: JSON.stringify(obj_test) 
+    input: JSON.stringify(obj_test)
   }
 
   stepfunctions.startExecution(params, (err, data) => {

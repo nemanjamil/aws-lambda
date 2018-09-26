@@ -1,5 +1,5 @@
 serverless invoke -f test_jedan -l
-serverless logs -f hello -t // fetch logs
+serverless logs -f hello -t // fetch logs  t ja tail logs
 
 serverless invoke -p event.json -f test_jedan
 
