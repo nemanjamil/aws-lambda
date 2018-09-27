@@ -98,15 +98,13 @@ module.exports.getItem = (event, contex, callback) => {
   // step_1 master
   // step_2 master
   // step_3 master
-<<<<<<< HEAD
   // step_4 master
-=======
 
   // step_1 posao
   // step_2 posao
 
   
->>>>>>> step_2 posao
+
   // .catch((err) => {
 
   // });
