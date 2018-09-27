@@ -100,6 +100,7 @@ module.exports.getItem = (event, contex, callback) => {
   // step_3 master
 
   // step_1 posao
+  // step_2 posao
 
   
   // .catch((err) => {
