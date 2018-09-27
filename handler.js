@@ -95,6 +95,7 @@ module.exports.getItem = (event, contex, callback) => {
     callback(null, createResponse(200, response));
   })
   // posao_1
+  // posao_2
   // .catch((err) => {
 
   // });
