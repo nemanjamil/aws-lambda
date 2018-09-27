@@ -94,11 +94,17 @@ module.exports.getItem = (event, contex, callback) => {
     console.log(response);
     callback(null, createResponse(200, response));
   })
+<<<<<<< HEAD
   // 
   // add on posao branch
   // add on posao branch_2
   // add on posao branch_3
   // add on posao branch_4
+=======
+  // add on master
+  // add on master_2
+  // add on master_3
+>>>>>>> master
   // .catch((err) => {
 
   // });
