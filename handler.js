@@ -94,7 +94,8 @@ module.exports.getItem = (event, contex, callback) => {
     console.log(response);
     callback(null, createResponse(200, response));
   })
-  //
+  // 
+  // add on posao branch
   // .catch((err) => {
 
   // });
