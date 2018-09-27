@@ -7,6 +7,8 @@ const config = require("./folder/config")
 const AWS = require('aws-sdk');
 const stepfunctions = new AWS.StepFunctions();
 
+const AWS_ID = process.env.nekiId;
+
 function createResponse(statusCode, message) {
   return {
     statusCode: statusCode,
@@ -34,10 +36,10 @@ module.exports.executeStepFunction = (event, context, cb) => {
       }),
     };
     cb(null, response);
-    
+
 
   })
-  
+
 
 
 }
@@ -61,7 +63,7 @@ function callStepFunction(number) {
   var params = {
     stateMachineArn: "arn:aws:states:us-east-1:553770165424:stateMachine:hello",
     input: JSON.stringify({
-      number: number*2
+      number: number * 2
     })
   };
 
@@ -85,8 +87,10 @@ module.exports.saveItem = (event, context, callback) => {
 };
 
 module.exports.getItem = (event, contex, callback) => {
-  let itemid = event.pathParameters.itemid;
-  dataBaseManager(itemid).then((response) => {
+  console.log("AWS_id : " + AWS_ID);
+  let itemid = event.pathParameters.itemId;
+  console.log(itemid);
+  databaseManager.getItem(itemid).then((response) => {
     console.log(response);
     callback(null, createResponse(200, response));
   })
@@ -170,7 +174,7 @@ module.exports.hello = (event, context, callback) => {
 
   let obj = {}
 
-  obj.broj = hl+15
+  obj.broj = hl + 15
   /* const response = {
     statusCode: 200,
     body: JSON.stringify({

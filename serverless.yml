@@ -9,6 +9,7 @@ custom:
   test: test2
   accountId : 553770165424
   settings:
+    nekiId : "lalalal"
     radni:
       ITEMS_DYNAMODB_TABLE: nemanja-baza-radni
     prod:
