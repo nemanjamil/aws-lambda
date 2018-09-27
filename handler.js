@@ -94,16 +94,6 @@ module.exports.getItem = (event, contex, callback) => {
     console.log(response);
     callback(null, createResponse(200, response));
   })
-   
-  // step_1 master
-  // step_2 master
-  // step_3 master
-  // step_4 master
-
-  // step_1 posao
-  // step_2 posao
-
-  
 
   // .catch((err) => {
 
