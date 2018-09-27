@@ -95,7 +95,7 @@ module.exports.getItem = (event, contex, callback) => {
     callback(null, createResponse(200, response));
   })
   
-  // step_1
+  // step_1 master
   // .catch((err) => {
 
   // });
