@@ -97,6 +97,9 @@ module.exports.getItem = (event, contex, callback) => {
    
   // master_1
   // master_2
+  // posao_1
+  // posao_2
+  // posao_3
   // .catch((err) => {
 
   // });
