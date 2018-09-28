@@ -6,8 +6,9 @@ const uuidv1 = require('uuid/v1');
 const config = require("./folder/config")
 const AWS = require('aws-sdk');
 const stepfunctions = new AWS.StepFunctions();
+const snsPublisher = require('./folder/snsPublisher');
 
-const AWS_ID = process.env.nekiId;
+const AWS_ID = process.env.NEKI_ID;
 
 function createResponse(statusCode, message) {
   return {
@@ -94,12 +95,7 @@ module.exports.getItem = (event, contex, callback) => {
     console.log(response);
     callback(null, createResponse(200, response));
   })
-   
-  // master_1
-  // master_2
-  // posao_1
-  // posao_2
-  // posao_3
+
   // .catch((err) => {
 
   // });
@@ -118,7 +114,6 @@ module.exports.test_jedan = async (event, context) => {
   console.log("Env TEST : " + process.env.test);
   console.log("Env TEST : " + process.env.pera);
   console.log("Env samo_ovde : " + process.env.samo_ovde);
-  console.log("Env samo_ovde_2 : " + process.env.samo_ovde_2);
   //console.log("Env custom.test : "+process.env.custom.test);
   console.log("Env config DOMAIN : " + config.DOMAIN);
   // lalal
@@ -218,6 +213,7 @@ module.exports.ciao = (event, context, callback) => {
 };
 
 
+
 module.exports.call_step_function = (event, contex, cb) => {
 
   let obj_test = {
@@ -257,3 +253,43 @@ module.exports.call_step_function = (event, contex, cb) => {
 
 
 }
+
+
+module.exports.s3uploadtriggered = (event, context, callback) => {
+  var bucket = event.Records[0].s3.bucket.name;
+  var fileName = event.Records[0].s3.object.key;
+  console.log('A new file named: ' + fileName + ' was uploaded to the bucket ' + bucket);
+  callback(null, { message: 'A new file named: ' + fileName + ' was uploaded to the bucket ' + bucket, event });
+};
+
+module.exports.dynamoDBStreamTriggered = (event, context,cb) => {
+  let key = event.Records[0].dynamodb.Keys.itemId;
+  let sortkey = event.Records[0].dynamodb.Keys.noteId;
+  console.log("Key : "+JSON.stringify(key));
+  console.log("sortkey : "+sortkey);
+  cb(
+    null, 
+    { message: 'Dynamodb item was modified with key: '+ key + '!', event  }
+  );
+}
+
+module.exports.snsLambdaPublisher = (event, context, callback) => {
+  snsPublisher.snsPublisher();
+
+  console.log("Executed Publusher");
+  const response = {
+    statusCode: 200,
+    body: JSON.stringify({
+      message: 'SNS Publisher executed successfully',
+      input: event,
+    }),
+  };
+  callback(null, response);
+};
+
+module.exports.snsLamdbaTriggered = (event, context, callback) => {
+  var topic = event.Records[0].Sns.TopicArn;
+  var message = event.Records[0].Sns.Message;
+  console.log(topic + '  ' + message);
+  callback(null, { message: 'SNS lamdba was triggered from the topic ' + topic + ' with message ' + message , event });
+};
